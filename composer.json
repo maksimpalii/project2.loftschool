@@ -1,0 +1,17 @@
+{
+  "require": {
+    "twig/twig": "^2.4",
+    "fzaninotto/faker": "^1.7",
+    "intervention/image": "^2.4",
+    "wixel/gump": "^1.5",
+    "illuminate/database": "^5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "models/"
+    },
+    "files": [
+      "core/config.php"
+    ]
+  }
+}

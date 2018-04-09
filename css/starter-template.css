@@ -1,0 +1,64 @@
+body {
+    padding-top: 50px;
+}
+
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.form-container {
+    margin-top: 25%;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.form-horizontal {
+    width: 80%;
+    max-width: 600px;
+}
+
+.userlist .form-container {
+    margin-top: 5%
+}
+
+.home li.home a, .registr li.registr a, .userlist li.userlist a, .filelist li.filelist a {
+    color: #fff;
+    background-color: #080808;
+}
+
+.container {
+    position: relative;
+}
+.adduser{
+    color: #9d9d9d;
+    background-color: #222;
+    padding: 15px;
+    margin: 10px 0 20px 0;
+    display: inline-block;
+    text-decoration: none;
+}
+.adduser:hover{
+    color: #ffffff;
+    background-color: #080808;
+    text-decoration: none;
+}
+.user_info {
+    color: #ffffff;
+    position: absolute;
+    z-index: 1;
+    top: 15px;
+    right: 75px;
+}
+.user_info img{margin: 0 5px;}
+
+.table>thead>tr>th{    vertical-align: middle;}
+.list_asc, .list_desc{cursor: pointer; margin: 0 5px;}
+
+@media (min-width: 768px) {
+    .user_info {
+        right: 0;
+    }
+}

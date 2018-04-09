@@ -1,0 +1,26 @@
+{% extends 'layout.twig' %}
+{% block content %}
+<body class='{{ page }}'>
+    {% include 'nav.twig' %}
+    <div class="container">
+        <h1>Запретная зона, доступ только авторизированному пользователю</h1>
+        <h2>Информация выводится из списка файлов</h2>
+        <table class="table table-bordered">
+            <tr>
+                <th>Название файла</th>
+                <th>Фотография</th>
+                <th>Действия</th>
+            </tr>
+            <tr>
+                {% for user in users %}
+                <td>{{ user.photo }}</td>
+                <td><img src="{{ url }}/photos/{{ user.photo }}"></td>
+                <td><a class="delete" href="delete/{{ user.id }}">
+                        <img src="{{ url }}/images/del.jpg"/>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div><!-- /.container -->
+{% endblock %}

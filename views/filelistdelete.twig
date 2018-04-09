@@ -1,0 +1,9 @@
+{% extends 'layout.twig' %}
+{% block content %}
+<body class='{{ page }}'>
+    {% include 'nav.twig' %}
+    <div class="container">
+        <h1>Запретная зона, доступ только авторизированному пользователю</h1>
+        <h2>{{ msg }}</h2>
+    </div><!-- /.container -->
+{% endblock %}
