@@ -7,16 +7,19 @@ require_once "core/MainController.php";
 require_once "core/View.php";
 require_once "models/Users.php";
 
-
 $routes = explode('/', $_SERVER['REQUEST_URI']);
 $controller_name = "Main";
 $action_name = 'index';
+$param = '';
 if (!empty($routes[1])) {
     $controller_name = $routes[1];
 }
 if (!empty($routes[2])) {
-    $action_name = $routes[2];
+    $act = explode('?', $routes[2]);
+    $param = $act[1];
+    $action_name = $act[0];
 }
+
 $filename = "controllers/" . strtolower($controller_name) . ".php";
 try {
     if (file_exists($filename)) {
@@ -35,7 +38,7 @@ try {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action_name = 'post';
         }
-        $controller->$action_name();
+        $controller->$action_name($param);
     } else {
         throw new Exception("Method not found");
     }

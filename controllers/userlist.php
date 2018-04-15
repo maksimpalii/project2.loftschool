@@ -74,9 +74,22 @@ class Userlist extends MainController
     {
         $this->checkSession();
 
-       // var_dump($_REQUEST);
-
         $editUser = new Users();
         $editUser->editUser();
     }
+
+    public function sort($param)
+    {
+        $this->checkSession();
+
+        $userInfo = new Users();
+        $dataUser = $userInfo->getUserInfo();
+        $dataPage['user'] = $dataUser;
+
+        $data = $userInfo->allUserFilter($param);
+
+        $datas = json_encode($data, JSON_UNESCAPED_UNICODE);
+        print_r($datas);
+    }
+
 }

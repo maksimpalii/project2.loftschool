@@ -13,8 +13,7 @@ class Users extends Model
 
     public function getUserInfo()
     {
-        $userModel = new Users();
-        $data = $userModel::query()->select('name', 'photo')
+        $data = Users::query()->select('name', 'photo')
             ->where('login', '=', $_SESSION['login'])
             ->get();
         return $data->toArray()[0];
@@ -36,8 +35,7 @@ class Users extends Model
 
     private function getUserAvatar($id)
     {
-        $userModel = new Users();
-        $data = $userModel::query()->select('photo')
+        $data = Users::query()->select('photo')
             ->where('id', '=', $id)
             ->get();
         return $data->toArray()[0];
@@ -47,8 +45,7 @@ class Users extends Model
     {
         $routes = explode('/', $_SERVER['REQUEST_URI']);
         $id = $routes[3];
-        $userModel = new Users();
-        $data = $userModel::first()
+        $data = Users::first()
             ->where('id', '=', $id)
             ->get();
         return $data->toArray()[0];
@@ -56,8 +53,7 @@ class Users extends Model
 
     private function checkLogin($login)
     {
-        $userModel = new Users();
-        $data = $userModel::query()
+        $data = Users::query()
             ->select('login')
             ->where('login', '=', $login)
             ->get();
@@ -66,12 +62,11 @@ class Users extends Model
 
     public function loginUser()
     {
-        $userModel = new Users();
         $login = $_POST['login'];
         $paswword = $_POST['password'];
         $logged = '';
         if (!empty($login) && !empty($paswword)) {
-            $paswword_ver = $userModel->cryptPasswd($paswword);
+            $paswword_ver = Users::cryptPasswd($paswword);
             $datas = $this->autentificationUser($paswword_ver, $login);
             if (!empty($datas)) {
                 if ($datas['login'] === $login) {
@@ -94,7 +89,6 @@ class Users extends Model
             header('Location: /');
             die();
         }
-        $userModel = new Users();
         if (!empty($_POST['login']) && !empty($_POST['name'])
             && !empty($_POST['age']) && !empty($_POST['description'])) {
             $routes = explode('/', $_SERVER['REQUEST_URI']);
@@ -110,23 +104,21 @@ class Users extends Model
                 //echo 'file not' . PHP_EOL;
                 if ($paswword === '') {
                     $data = ['login' => $login, 'name' => $name, 'age' => $age, 'description' => $description];
-                    $userModel->updateUser($data, $routes[3]);
+                    Users::updateUser($data, $routes[3]);
                 } else {
-                    $paswword = $userModel->cryptPasswd($paswword);
+                    $paswword = Users::cryptPasswd($paswword);
                     $data = ['login' => $login,
                         'password' => $paswword,
                         'name' => $name,
                         'age' => $age,
                         'description' => $description];
-                    $userModel->updateUser($data, $routes[3]);
+                    Users::updateUser($data, $routes[3]);
                     // echo 'yes' . PHP_EOL;
                 }
             } else {
                 //echo 'file yes' . PHP_EOL;
-                $userModel = new Users();
-                $inImg = $userModel->getUserAvatar($routes[3]);
-                //var_dump($inImg);
-                if ($userModel->deleteOnlyPhoto($inImg['photo']) === 'delete') {
+                $inImg = Users::getUserAvatar($routes[3]);
+                if (Users::deleteOnlyPhoto($inImg['photo']) === 'delete') {
                     $fileUp = new File();
                     $img_url = $fileUp->uploadImg($fileUpload, $login);
                     if ($img_url !== null) {
@@ -137,16 +129,16 @@ class Users extends Model
                                 'age' => $age,
                                 'description' => $description,
                                 'img_url' => $img_url];
-                            $userModel->updateUser($data, $routes[3]);
+                            Users::updateUser($data, $routes[3]);
                         } else {
-                            $paswword = $userModel->cryptPasswd($paswword);
+                            $paswword = Users::cryptPasswd($paswword);
                             $data = ['login' => $login,
                                 'password' => $paswword,
                                 'name' => $name,
                                 'age' => $age,
                                 'description' => $description,
                                 'img_url' => $img_url];
-                            $userModel->updateUser($data, $routes[3]);
+                            Users::updateUser($data, $routes[3]);
                         }
                     }
                 } else {
@@ -249,12 +241,11 @@ class Users extends Model
     {
         $routes = explode('/', $_SERVER['REQUEST_URI']);
         $id = $routes[3];
-        $userModel = new Users();
-        $datas = $userModel::query()->select('photo')->where('id', '=', $id)->get();
+        $datas = Users::query()->select('photo')->where('id', '=', $id)->get();
         $data = $datas->toArray()[0];
         if ($data !== false) {
-            if ($this->deleteOnlyPhoto($data['photo']) === 'delete') {
-                $user = $userModel::find($id);
+            if (Users::deleteOnlyPhoto($data['photo']) === 'delete') {
+                $user = Users::find($id);
                 $user->photo = '';
                 $user->save();
                 $msg = 'Аватарка удалена';
@@ -282,12 +273,11 @@ class Users extends Model
     {
         $routes = explode('/', $_SERVER['REQUEST_URI']);
         $id = $routes[3];
-        $userModel = new Users();
-        $datas = $userModel::query()->select('login', 'photo')->where('id', '=', $id)->get();
+        $datas = Users::query()->select('login', 'photo')->where('id', '=', $id)->get();
         $data = $datas->toArray()[0];
         if ($data !== false) {
-            if ($this->deleteOnlyPhoto($data['photo']) === 'delete') {
-                $user = $userModel::find($id);
+            if (Users::deleteOnlyPhoto($data['photo']) === 'delete') {
+                $user = Users::find($id);
                 if ($_SESSION['login'] === $data['login']) {
                     $user->delete();
                     $msg = 'Вы удалили себя!';
@@ -306,15 +296,22 @@ class Users extends Model
 
     public function allPhoto()
     {
-        $userModel = new Users();
-        $data = $userModel::query()->select('id', 'photo')->where('photo', '>', '')->get();
+        $data = Users::query()->select('id', 'photo')->where('photo', '>', '')->get();
         return $data->toArray();
     }
 
     public function allUser()
     {
-        $userModel = new Users();
-        $data = $userModel::query()->select('login', 'name', 'age', 'description', 'photo', 'id')->get();
+        $data = Users::query()->select('login', 'name', 'age', 'description', 'photo', 'id')->get();
+        return $data->toArray();
+    }
+
+    public function allUserFilter($sort)
+    {
+        $data = Users::query()
+            ->select('login', 'name', 'age', 'description', 'photo', 'id')
+            ->orderBy('age', $sort)
+            ->get();
         return $data->toArray();
     }
 
@@ -332,11 +329,10 @@ class Users extends Model
 
     private function updateUser($data, $id)
     {
-        $userModel = new Users();
         if (array_key_exists('img_url', $data)) {
             if (array_key_exists('password', $data)) {
                 //echo "Массив содержит 'password' & 'img_url' .";
-                $user = $userModel::find($id);
+                $user = Users::find($id);
                 $user->login = $data['login'];
                 $user->password = $data['password'];
                 $user->name = $data['name'];
@@ -346,7 +342,7 @@ class Users extends Model
                 $user->save();
             } else {
                 //echo "Массив не содержит 'password' но содержит 'img_url' .";
-                $user = $userModel::find($id);
+                $user = Users::find($id);
                 $user->login = $data['login'];
                 $user->name = $data['name'];
                 $user->age = $data['age'];
@@ -357,7 +353,7 @@ class Users extends Model
         } else {
             if (array_key_exists('password', $data)) {
                 //echo "Массив содержит 'password' и не содержит 'img_url' .";
-                $user = $userModel::find($id);
+                $user = Users::find($id);
                 $user->login = $data['login'];
                 $user->password = $data['password'];
                 $user->name = $data['name'];
@@ -366,7 +362,7 @@ class Users extends Model
                 $user->save();
             } else {
                 //echo "Массив не содержит 'password' и не содержит 'img_url' .";
-                $user = $userModel::find($id);
+                $user = Users::find($id);
                 $user->login = $data['login'];
                 $user->name = $data['name'];
                 $user->age = $data['age'];
@@ -379,8 +375,7 @@ class Users extends Model
 
     private function autentificationUser($password, $login)
     {
-        $userModel = new Users();
-        $data = $userModel::query()
+        $data = Users::query()
             ->select('login')
             ->where('login', '=', $login)
             ->where('password', '=', $password)

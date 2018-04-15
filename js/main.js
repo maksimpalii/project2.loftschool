@@ -66,11 +66,9 @@ $('.list_desc').on('click', function (e) {
     e.preventDefault();
 
     $.ajax({
-        url: '/listd',
-        type: 'POST',
-        cache: false,
-        contentType: false,
-        processData: false,
+        url: 'sort',
+        type: 'GET',
+        data: 'desc',
         dataType: 'json'
     }).done(function (resultat) {
         var content = '<tr>';
@@ -99,11 +97,9 @@ $('.list_desc').on('click', function (e) {
 $('.list_asc').on('click', function (e) {
     e.preventDefault();
     $.ajax({
-        url: '/lista',
-        type: 'POST',
-        cache: false,
-        contentType: false,
-        processData: false,
+        url: 'sort',
+        type: 'GET',
+        data: 'asc',
         dataType: 'json'
     }).done(function (resultat) {
 
